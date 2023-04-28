@@ -44,10 +44,6 @@ def main(argv):
 
    outfile = open(outputfile, "w")
 
-   crop_x1 = 1500
-   crop_x2 = 2500
-   crop_y1 = 600
-   crop_y2 = 1600
    crop_size = 500
 
    crop_watermark = 250
