@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.11
+#!/usr/bin/env python3.10
 #########################################################################################
 #
 #  Title: Blur Detection
@@ -16,6 +16,7 @@
 #########################################################################################
 
 import cv2
+import blur_detector
 import os
 import sys, getopt
 import glob
@@ -48,13 +49,10 @@ def main(argv):
 
    crop_watermark = 250
 
-   for filename in glob.glob(inputfile):
+   for filename in sorted(glob.glob(inputfile)):
         print (filename)
         
         img = cv2.imread(filename) ##read the image specified in the input
-
-        # Remove camera noise 
-        img = cv2.fastNlMeansDenoisingColored(img,None,21,21,21,21)
 
         # Gaussian blurring requires grayscale only
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -103,19 +101,27 @@ def main(argv):
         
         crop_img = img[crop_y1:crop_y2, crop_x1:crop_x2]
 
+        # Remove camera noise 
+        crop_img = cv2.fastNlMeansDenoisingColored(crop_img,None,21,10,21,21)
+
+        crop_gray = cv2.cvtColor(crop_img, cv2.COLOR_BGR2GRAY)
+
+        blur_map = blur_detector.detectBlur(crop_gray, downsampling_factor=4, num_scales=4, scale_start=2, num_iterations_RF_filter=3, show_progress = False)
+        BlurNew = blur_map.sum()
+
         if (display):
            cv2.imshow("crop", crop_img)
            cv2.waitKey(0)
 
         crop_img = cv2.Laplacian(img, cv2.CV_64F)
         BlurVal = crop_img.var()
-        print ('Blur = %.1f \n' % BlurVal)
+        print ('Blur = %.1f, BlurNew = %.1f \n' % (BlurVal, BlurNew))
 
         base = os.path.basename(filename)
         imageName = os.path.splitext(base)[0]
         imageName = re.sub("\D", "", imageName)
         
-        outfile.write(imageName+" %.02f \n" % BlurVal)
+        outfile.write(imageName+" %.02f %.02f \n" % (BlurVal, BlurNew))
 
    outfile.close()
    print('Output written:', outputfile)

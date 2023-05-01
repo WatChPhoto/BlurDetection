@@ -16,7 +16,6 @@ SCRIPTDIR=${BASEDIR}/script
 mkdir -p ${SCRIPTDIR}
 
 DIRS=(BarrelSurveyFar  BarrelSurveyRings  BottomCornerSurvey  BottomSurvey  TopCornerSurvey  TopSurvey)
-#DIRS=(BottomSurvey)
 
 rootpath=/project/rpp-blairt2k/public_html/TOW-Feb2020/Surveys
 
@@ -55,8 +54,8 @@ for dir in ${DIRS[@]}; do
 #SBATCH --job-name=${basename}
 
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=4G        
-#SBATCH --time=0-00:30 
+#SBATCH --mem=4000M
+#SBATCH --time=0-0:10:00 
 
 #SBATCH --account=rpp-blairt2k
 
@@ -109,8 +108,8 @@ EOF
 #SBATCH --job-name=${basename}
 
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=4G        
-#SBATCH --time=0-00:30 
+#SBATCH --mem=4000M     
+#SBATCH --time=0-0:10:00 
 
 #SBATCH --account=rpp-blairt2k
 
